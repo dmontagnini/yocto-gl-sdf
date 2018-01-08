@@ -1,0 +1,2 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../bin/libyocto_gl.a  CMakeFiles/yocto_gl.dir/yocto/yocto_gl.cpp.o CMakeFiles/yocto_gl.dir/yocto/ext/stb_image.cpp.o CMakeFiles/yocto_gl.dir/yocto/ext/imgui/imgui.cpp.o CMakeFiles/yocto_gl.dir/yocto/ext/imgui/imgui_draw.cpp.o CMakeFiles/yocto_gl.dir/yocto/ext/imgui/imgui_impl_glfw_gl3.cpp.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib ../bin/libyocto_gl.a
