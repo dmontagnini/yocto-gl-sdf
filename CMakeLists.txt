@@ -74,7 +74,7 @@ target_link_libraries(marcher yocto_gl)
 if(YOCTO_OPENGL)
     add_executable(yview apps/yview.cpp yocto/yocto_gl.h)
     add_executable(yitrace apps/yitrace.cpp yocto/yocto_gl.h)
-    add_executable(ygltfview apps/ygltfview.cpp yocto/yocto_gl.h yocto/yocto_gltf.h)
+    add_executable(ygltfview apps/ygltfview.cpp yocto/yocto_gl.h yocto/yocto_gltf.h yocto/yocto_gltf.cpp)
     add_executable(yimview apps/yimview.cpp yocto/yocto_gl.h)
 
     target_link_libraries(yview yocto_gl)
