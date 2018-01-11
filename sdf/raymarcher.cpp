@@ -5,23 +5,20 @@
 #include "../yocto/yocto_gl.h"
 #include "distance_functions.h"
 #include "math_sdf.h"
+#include "scene_sdf.h"
 
 using namespace ygl;
 
 float EPSILON = 0.001f;
-float RAY_MAX = 20.0f;
+float RAY_MAX = 800.0f;
 vec4f RED = {1.0f,1.0f,1.0f,1.0f};
 float RAY_MIN = 0.001f;
 int MAX_STEPS = 100;
 
-float sceneSDF(vec3f pos){
-    return unionSDF(boxSDF(pos + vec3f{-2.0f,0.0f,0.0f},{1.0f,1.0f,1.0f}),sphereSDF(pos + vec3f{2.0f,0.0f,0.0f}, 1.0f));
-}
-
 vec3f gradient(vec3f pos){
-    return normalize(vec3f{sceneSDF({pos.x + EPSILON, pos.y, pos.z}) - sceneSDF({pos.x - EPSILON, pos.y, pos.z}),
-                           sceneSDF({pos.x , pos.y+ EPSILON, pos.z}) - sceneSDF({pos.x , pos.y - EPSILON, pos.z}),
-                           sceneSDF({pos.x, pos.y, pos.z + EPSILON}) - sceneSDF({pos.x, pos.y, pos.z - EPSILON})});
+    return normalize(vec3f{sceneSDF({pos.x + EPSILON, pos.y, pos.z}).x - sceneSDF({pos.x - EPSILON, pos.y, pos.z}).x,
+                           sceneSDF({pos.x , pos.y+ EPSILON, pos.z}).x - sceneSDF({pos.x , pos.y - EPSILON, pos.z}).x,
+                           sceneSDF({pos.x, pos.y, pos.z + EPSILON}).x - sceneSDF({pos.x, pos.y, pos.z - EPSILON}).x});
 }
 
 ray3f eval_ray(camera &cam, vec2f uv) {
@@ -33,25 +30,69 @@ ray3f eval_ray(camera &cam, vec2f uv) {
     return ray3f{cam.frame.o, normalize(q - o), RAY_MIN, RAY_MAX};
 }
 
-vec4f shade(vec3f &amb, ray3f &ray) {
-
+vec2f intersect(ray3f &ray) {
     float tot_dist = 0.0f;
     float dist = ray.tmin;
     vec3f pos = ray.o;
-
+    vec2f v;
     for(int step = 0; step < MAX_STEPS; step++){
         if(dist < ray.tmin || tot_dist > ray.tmax) break;
 
-        dist = sceneSDF(pos);
+        v = sceneSDF(pos);
+        dist = v.x;
         tot_dist += dist;
         pos += dist * ray.d;
     }
 
     if(dist < ray.tmin) {
-        float diffuse = max(0.0f,dot(-ray.d,gradient(pos)));
-        float specular = pow(diffuse,32.0f);
-        float ds = diffuse + specular;
-        return {RED.x*ds, RED.y*ds, RED.z*ds, 1.0f};
+        return {tot_dist, v.y};
+    }
+    else return {tot_dist,-1.0f};
+}
+
+vec4f shade(vec3f &amb, ray3f &ray) {
+
+
+
+//    float tot_dist = 0.0f;
+//    float dist = ray.tmin;
+//    vec3f pos = ray.o;
+//
+//    for(int step = 0; step < MAX_STEPS; step++){
+//        if(dist < ray.tmin || tot_dist > ray.tmax) break;
+//
+//        dist = sceneSDF(pos);
+//        tot_dist += dist;
+//        pos += dist * ray.d;
+//    }
+
+    // calcola luci
+    // calcola colore materia
+
+    vec2f v = intersect(ray);
+
+    if(v.y != -1.0f) {
+        auto pos = ray.d * v.x + ray.o;
+        auto norm = gradient(pos);
+        auto kd = make_materials(v.y);
+        auto color = kd*amb;
+
+        for(light_sdf* l : set_lights()) {
+            auto light_direction = normalize(l->pos - pos);
+            auto ll = length(l->pos - pos);
+            ray3f shadow_ray = ray3f{pos, light_direction, RAY_MIN*3, ll};
+            //printf("%f %f %f\n", l->pos.x, l->pos.y, l->pos.z);
+            //if(intersect(shadow_ray).y != -1.0f) continue;
+           // printf("%f\n", intersect(shadow_ray).y);
+            float diffuse = max(0.0f,dot(-ray.d,norm));
+            //float specular = pow(diffuse,32.0f);
+            float ds = diffuse; //+ specular;
+
+            //auto intensity = l->ke / ( ll * ll);
+            color += color * ds;
+           // color += kd * intensity * max(0.0f, dot(light_direction, norm));
+        }
+        return {color.x, color.y, color.z, 1.0f};
     }
     else
         return {0.0f,0.0f,0.0f,1.0f};
@@ -101,31 +142,32 @@ int main(int argc, char** argv) {
 //    printf("saving image %s\n", imageout.c_str());
 //    save_hdr_or_ldr(imageout, hdr);
 
-    vec3f o = {0.0f,0.0f,10.0f};
-    vec3f t = {0.0f,0.0f,0.0f};
-    vec3f up_dir = {0.0f,1.0f,0.0f};
+//    vec3f o = {0.0f,5.0f,10.0f};
+//    vec3f t = {0.0f,0.0f,0.0f};
+//    vec3f up_dir = {0.0f,1.0f,0.0f};
 
 //    vec3f cam_dir = normalize(t - o);
 //    vec3f cam_right = normalize(cross(up_dir,o));
 //    vec3f cam_up = normalize(cross(cam_dir,cam_right));
 
-    auto cam = camera();
+   // auto cam = camera();
 //    cam.frame.x = cam_right;
 //    cam.frame.y = cam_up;
 //    cam.frame.z = cam_dir;
 
-    cam.frame.x = {1.0f, 0.0f, 0.0f};
-    cam.frame.y = {0.0f, 1.0f, 0.0f};
-    cam.frame.z = {0.0f, 0.0f, 1.0f};
-//    cam.frame.x = {1.0f,0.0f,0.0f};
-//    cam.frame.y = {0.0f, 0.957826f, -0.287348f};
-//    cam.frame.z = {0.0f, 0.287348f, 0.957826f};
+//    cam.frame.x = {1.0f, 0.0f, 0.0f};
+//    cam.frame.y = {0.0f, 1.0f, 0.0f};
+//    cam.frame.z = {0.0f, 0.0f, 1.0f};
 
-    cam.frame.o = o;
-    cam.yfov = 0.261799f*1.5f;
+
+
 //    cam.yfov = 1.0f;
 //    printf("%f %f %f", prova.x, prova.y, prova.z);
-    vec3f amb = {0.5f, 0.5f, 0.5f};
+    vec3f amb = set_environment();
+
+    camera cam = set_camera();
+
+
 
     auto hdr = raymarcher(amb, cam, 720);
     save_image4f("../tests/img.hdr", hdr);
