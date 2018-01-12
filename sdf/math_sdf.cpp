@@ -24,3 +24,14 @@ float differenceSDF(float d1, float d2){
     return max(d1,-d2);
 }
 
+mat4f rotateY(float theta) {
+    float c = cos(theta);
+    float s = sin(theta);
+
+    return mat4f(
+            vec4f(c, 0, s, 0),
+            vec4f(0, 1, 0, 0),
+            vec4f(-s, 0, c, 0),
+            vec4f(0, 0, 0, 1)
+    );
+}

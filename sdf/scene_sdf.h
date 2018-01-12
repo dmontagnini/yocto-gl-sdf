@@ -19,6 +19,8 @@ camera set_camera();
 
 vec3f make_materials(float id);
 
+vec2f texture_mapping(vec3f pos, float id);
+
 vec3f set_environment();
 
 std::vector<light_sdf*> set_lights();
