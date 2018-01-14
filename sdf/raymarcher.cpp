@@ -228,11 +228,15 @@ image4f raymarcher(vec3f &amb,camera &cam, int resolution, int samples){
 
 
 int main(int argc, char** argv) {
+
     // command line parsing
-    //auto parser = make_parser(argc, argv, "ytrace", "offlin oath tracing");
+	auto parser = make_parser(argc, argv, "yraymarcher", "offline raymarcher");
+	auto resolution = parse_opt(parser, "--resolution", "-r", "vertical resolution", 720);
+	auto samples = parse_opt(parser, "--samples", "-s", "per-pixel samples", 1);
+	auto amb = parse_opt(parser, "--ambient", "-a", "ambient color", 0.1f);
+	auto imageout = argv[argc - 1];
 
-
-    print("hello world!\n");
+    printf("hello world!\n");
 
     // load scene
 //    printf("loading scene %s\n", scenein.c_str());
@@ -271,11 +275,9 @@ int main(int argc, char** argv) {
 
 //    cam.yfov = 1.0f;
 //    printf("%f %f %f", prova.x, prova.y, prova.z);
-    vec3f amb = set_environment();
+//		vec3f amb = set_environment();
 
     camera cam = set_camera();
-
-    auto samples = 1;
 
     auto txtg = load_image4b("../tests/grid.png");
     auto txtc = load_image4b("../tests/colored.png");
@@ -287,6 +289,6 @@ int main(int argc, char** argv) {
 //    textg->name="grid";
 //    textg->path="../tests/grid.png";
 
-    auto hdr = raymarcher(amb, cam, 720,samples);
-    save_image4f("../tests/img.hdr", hdr);
+	auto hdr = raymarcher(vec3f{ amb, amb, amb }, cam, resolution, samples);
+    save_image4f(imageout, hdr);
 }
