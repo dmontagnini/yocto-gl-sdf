@@ -16,4 +16,6 @@ float boxSDF(vec3f pos, vec3f size);
 
 float sdPlane( vec3f p, vec4f n );
 
+float sdCappedCylinder( vec3f p, vec2f h );
+
 #endif //YOCTO_GL_DISTANCE_FUNCTIONS_H

@@ -11,6 +11,10 @@ using namespace ygl;
 
 vec3f abs(vec3f v);
 
+vec2f abs(vec2f v);
+
+vec2f max(vec2f v, vec2f u);
+
 vec3f max(vec3f v, vec3f u);
 
 float intersectSDF(float d1, float d2);

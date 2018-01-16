@@ -15,15 +15,13 @@ struct light_sdf {
     vec3f ke;
 };
 
-camera set_camera();
+camera make_camera();
 
-vec3f make_materials(float id);
+std::vector<material*> make_materials();
+
+std::vector<light_sdf*> make_lights();
 
 vec2f texture_mapping(vec3f pos, float id);
-
-vec3f set_environment();
-
-std::vector<light_sdf*> set_lights();
 
 vec2f sceneSDF(vec3f pos);
 

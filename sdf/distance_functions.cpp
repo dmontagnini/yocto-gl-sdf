@@ -17,3 +17,9 @@ float sdPlane( vec3f p, vec4f n )
     // n must be normalized
     return dot(p,vec3f{n.x, n.y, n.z}) + n.w;
 }
+
+float sdCappedCylinder( vec3f p, vec2f h )
+{
+    vec2f d = abs(vec2f(length(vec2f{p.x,p.z}),p.y)) - h;
+    return min(max(d.x,d.y),0.0) + length(max(d,vec2f{0.0f,0.0f}));
+}

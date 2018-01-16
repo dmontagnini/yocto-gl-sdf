@@ -4,8 +4,16 @@
 
 #include "math_sdf.h"
 
+vec2f abs(vec2f v){
+    return {abs(v.x),abs(v.y)};
+}
+
 vec3f abs(vec3f v){
     return {abs(v.x),abs(v.y),abs(v.z)};
+}
+
+vec2f max(vec2f v, vec2f u){
+    return {max(v.x,u.x),max(v.y,u.y)};
 }
 
 vec3f max(vec3f v, vec3f u){
