@@ -174,8 +174,8 @@ void compute(int start, int nt, int samples, std::vector<light_sdf *>& lights, s
 
     for(int j = start; j < img.height(); j += nt){
         for(int i = 0; i < img.width(); i++){
-//            printf("i %d, j %d\n",i,j);
-//            fflush(stdout);
+/*            printf("i %d, j %d\n",i,j);
+            fflush(stdout);*/
             for (int k = 0; k < samples; k++){
                 for (int l = 0; l < samples; l++){
                     float u = (i + (l + 0.5f) / samples) / img.width();
@@ -202,13 +202,11 @@ image4f raymarcher(vec3f &amb, int resolution, int samples){
     printf("width %d, height %d\n",img.width(),img.height());
 
     int nt = 4;
-    std::thread t[nt];
+    std::thread t[4];
     for(int k = 0; k < nt; k++) {
         t[k] = std::thread(compute, k, nt, samples, std::ref(lights), std::ref(mats)
                 , std::ref(amb), std::ref(img), std::ref(cam));
     }
-
-
 
     for (int k = 0; k < nt; k++) {
         t[k].join();
@@ -222,10 +220,10 @@ int main(int argc, char** argv) {
 
     // command line parsing
 	auto parser = make_parser(argc, argv, "yraymarcher", "offline raymarcher");
-	auto resolution = parse_opt(parser, "--resolution", "-r", "vertical resolution", 720);
-	auto samples = parse_opt(parser, "--samples", "-s", "per-pixel samples", 1);
-	auto amb = parse_opt(parser, "--ambient", "-a", "ambient color", 0.1f);
-	auto imageout = argv[argc - 1];
+	auto resolution = parse_opt<int>(parser, "--resolution", "-r", "vertical resolution", 720);
+	auto samples = parse_opt<int>(parser, "--samples", "-s", "per-pixel samples", 1);
+	auto amb = parse_opt<float>(parser, "--ambient", "-a", "ambient color", 0.1f);
+	auto imageout = parse_opt<std::string>(parser, "--output image", "-o", "output image", "../tests/out.hdr");
 
     printf("hello world!\n");
 
