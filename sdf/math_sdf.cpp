@@ -32,6 +32,13 @@ float differenceSDF(float d1, float d2){
     return max(d1,-d2);
 }
 
+float sign( float x )
+{
+    if( x<0.0f ) return -1.0f;
+    if( x>0.0f ) return  1.0f;
+    return 0.0f;
+}
+
 mat4f rotateY(float theta) {
     float c = cos(theta);
     float s = sin(theta);
