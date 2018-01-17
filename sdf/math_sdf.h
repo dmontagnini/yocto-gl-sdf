@@ -23,6 +23,8 @@ float unionSDF(float d1, float d2);
 
 float differenceSDF(float d1, float d2);
 
+float sign(float x);
+
 mat4f rotateY(float theta);
 
 #endif //YOCTO_GL_MATH_SDF_H
