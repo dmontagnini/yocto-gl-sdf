@@ -116,13 +116,22 @@ vec4f shade(vec3f &amb, ray3f &ray, std::vector<material*> &mats, std::vector<li
         auto ks = mat->ks;
         auto kr = mat->kr;
         auto rs = mat->rs;
-        auto op = mat->op;
 
         auto bp = rs ? 2.0f / std::pow(rs, 4.0f) - 2.0f : 1e6f;
 
         if(mat->kd_txt.txt != nullptr) {
             auto tex_coord = texture_mapping(pos, v.y);
             kd *= eval_texture(mat->kd_txt.txt, tex_coord);
+        }
+
+        if(mat->ks_txt.txt != nullptr) {
+            auto tex_coord = texture_mapping(pos, v.y);
+            ks *= eval_texture(mat->ks_txt.txt, tex_coord);
+        }
+
+        if(mat->kr_txt.txt != nullptr) {
+            auto tex_coord = texture_mapping(pos, v.y);
+            kr *= eval_texture(mat->kr_txt.txt, tex_coord);
         }
 
         auto color = kd*amb;

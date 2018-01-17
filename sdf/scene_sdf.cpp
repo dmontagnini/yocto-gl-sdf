@@ -105,7 +105,7 @@ vec2f texture_mapping(vec3f pos, float id) {
 
 
 float archSDF(vec3f pos){
-    return differenceSDF(boxSDF(pos,{0.1f,0.6f,1.2f}),sphereSDF(pos , 0.4f));
+    return differenceSDF(udBox(pos,{0.1f,0.6f,1.2f}),sdSphere(pos , 0.4f));
 }
 
 float templeSDF(vec3f pos){
@@ -117,7 +117,7 @@ float templeSDF(vec3f pos){
     float c6 = sdCappedCylinder(pos + vec3f{0.2f,-0.6f,-0.8f},vec2f(0.1f,0.6f));
     float c7 = sdCappedCylinder(pos + vec3f{-0.6f,-0.6f,-0.8f},vec2f(0.1f,0.6f));
     float c8 = sdCappedCylinder(pos + vec3f{0.6f,-0.6f,-0.8f},vec2f(0.1f,0.6f));
-    float rect1 = boxSDF(pos, vec3f{2.0f,0.1f,1.0f});
+    float rect1 = udBox(pos, vec3f{2.0f,0.1f,1.0f});
     return unionSDF(unionSDF(unionSDF(c5,c6),unionSDF(c7,c8)),
     unionSDF(unionSDF(unionSDF(c1,c2),unionSDF(c3,c4)),rect1));
 }
@@ -125,9 +125,9 @@ float templeSDF(vec3f pos){
 
 
 vec2f sceneSDF(vec3f pos) {
-    float d_plane = boxSDF(pos, {10.0f,0.001f,10.0f});
-    float d_sphere = sphereSDF(pos + vec3f{0.6f,-0.5f,1.5f}, 0.5f);
-    float d_cube = boxSDF(pos + vec3f{-0.6f,-0.5f,1.5f}, { 0.5f, 0.5f, 0.5f});
+    float d_plane = udBox(pos, {10.0f,0.001f,10.0f});
+    float d_sphere = sdSphere(pos + vec3f{0.6f,-0.5f,1.5f}, 0.5f);
+    float d_cube = udBox(pos + vec3f{-0.6f,-0.5f,1.5f}, { 0.5f, 0.5f, 0.5f});
 
 //    mat4f rot = inverse(rotateY(0.5f));
 //    auto pos_arc =  pos + vec3f{1.5f,-0.6f,4.0f};
