@@ -3,7 +3,7 @@
 //
 
 #include "../yocto/yocto_gl.h"
-#include "distance_functions.h"
+#include "func_sdf.h"
 
 using namespace ygl;
 

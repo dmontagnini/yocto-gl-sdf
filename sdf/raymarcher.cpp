@@ -3,7 +3,7 @@
 //
 
 #include "../yocto/yocto_gl.h"
-#include "distance_functions.h"
+#include "math_sdf.h"
 #include "math_sdf.h"
 #include "scene_sdf.h"
 

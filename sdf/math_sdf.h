@@ -4,6 +4,7 @@
 
 #include "../yocto/yocto_gl.h"
 
+
 using namespace ygl;
 
 #ifndef YOCTO_GL_MATH_SDF_H

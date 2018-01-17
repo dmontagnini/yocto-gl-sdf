@@ -2,7 +2,7 @@
 // Created by Dario Montagnini on 11/01/18.
 //
 
-#include "distance_functions.h"
+#include "func_sdf.h"
 
 float sdSphere(vec3f pos, float r) {
     return length(pos) - r;
