@@ -39,14 +39,35 @@ float sign( float x )
     return 0.0f;
 }
 
-mat4f rotateY(float theta) {
+mat3f rotateX(float theta) {
     float c = cos(theta);
     float s = sin(theta);
 
-    return mat4f(
-            vec4f(c, 0, s, 0),
-            vec4f(0, 1, 0, 0),
-            vec4f(-s, 0, c, 0),
-            vec4f(0, 0, 0, 1)
-    );
+    return mat3f(
+            vec3f(1, 0, 0),
+            vec3f(0, c, -s),
+            vec3f(0, s, c)
+	);
+}
+
+mat3f rotateY(float theta) {
+	float c = cos(theta);
+	float s = sin(theta);
+
+	return mat3f(
+		vec3f(c, 0, s),
+		vec3f(0, 1, 0),
+		vec3f(-s,0, c)
+	);
+}
+
+mat3f rotateZ(float theta) {
+	float c = cos(theta);
+	float s = sin(theta);
+
+	return mat3f(
+		vec3f(c,-s, 0),
+		vec3f(s, c, 0),
+		vec3f(0, 0, 1)
+	);
 }
