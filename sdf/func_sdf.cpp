@@ -69,8 +69,8 @@ float sdCappedCone(vec3f p, vec3f c) {
     vec2f vv = vec2f( dot(v,v), v.x*v.x );
     vec2f qv = vec2f( dot(v,w), v.x*w.x );
     vec2f d = max(qv,vec2f())*qv/vv;
-    //return sqrt( dot(w,w) - max(d.x,d.y) ) * sign(max(q.y*v.x-q.x*v.y,w.y));
-    return 1.0f;
+    return sqrt( dot(w,w) - max(d.x,d.y) ) * sign(max(q.y*v.x-q.x*v.y,w.y));
+//    return 1.0f;
 }
 
 float sdEllipsoid(vec3f p, vec3f r) {

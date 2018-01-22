@@ -14,7 +14,8 @@
 camera make_camera() {
 
     auto cam = camera();
-
+//    cam.frame.o = {0.0f,8.0f,30.0f};
+//    cam.frame.o = {0.0f,6.0f,20.0f};
     cam.frame.o = {0.0f,4.0f,10.0f};
     cam.frame.x = {1.0f,0.0f,0.0f};
     cam.frame.y = {0.0f, 0.957826f, -0.287348f};
@@ -31,9 +32,9 @@ std::vector<material*> make_materials() {
     // plane material
     auto mat_plane = new material();
     mat_plane->kd = vec3f{0.5f,0.5f,0.5f};
-    mat_plane->kr = vec3f{0.2f,0.2f,0.2f};
-    mat_plane->kd_txt.txt = new texture{"wood.png"};
-    mat_plane->kd_txt.txt->ldr = load_image4b("../tests/wood.png");
+    mat_plane->kr = vec3f{0.4f,0.4f,0.4f};
+    mat_plane->kd_txt.txt = new texture{"grid.png"};
+    mat_plane->kd_txt.txt->ldr = load_image4b("../tests/grid.png");
     mats.push_back(mat_plane);
 
     // sphere material
@@ -42,9 +43,8 @@ std::vector<material*> make_materials() {
     mat_sphere->kr = vec3f{0.0f,0.0f,0.0f};
     mat_sphere->ks = vec3f{0.8f,0.8f,0.8f};
     mat_sphere->rs = 0.3f;
-    mat_sphere->op = 0.2f;
-    mat_sphere->kd_txt.txt = new texture{"colored.png"};
-    mat_sphere->kd_txt.txt->ldr = load_image4b("../tests/colored.png");
+//    mat_sphere->kd_txt.txt = new texture{"colored.png"};
+//    mat_sphere->kd_txt.txt->ldr = load_image4b("../tests/colored.png");
     mats.push_back(mat_sphere);
 
     // cube material
@@ -53,9 +53,8 @@ std::vector<material*> make_materials() {
     mat_cube->kr = vec3f{0.0f,0.0f,0.0f};
     mat_cube->ks = vec3f{0.8f,0.8f,0.8f};
     mat_cube->rs = 0.3f;
-    mat_cube->op = 0.2f;
-    mat_cube->kd_txt.txt = new texture{"colored.png"};
-    mat_cube->kd_txt.txt->ldr = load_image4b("../tests/colored.png");
+//    mat_cube->kd_txt.txt = new texture{"colored.png"};
+//    mat_cube->kd_txt.txt->ldr = load_image4b("../tests/colored.png");
     mats.push_back(mat_cube);
 
     return mats;
@@ -86,13 +85,6 @@ vec2f texture_mapping(vec3f pos, float id) {
         uv.y = fmod(abs(pos.z),1.0f);
     }
     else if (id == 1.0) {
-//        auto r  = 0.5f;
-//        float phi = atan(pos.y/pos.x);
-//        float teta = acos(fmod(pos.z/r,1.0f));
-////        printf("%f %f\n",pos.z,teta);
-//        uv.x = fmod(phi/(2*pif),1.0f);
-//        uv.y = fmod(teta/pif,1.0f);
-////        printf("%f %f\n",uv.x,uv.y);
         uv.x = 1.0f/32.0f;
         uv.y = 1.0f/32.0f;
     }
@@ -104,57 +96,70 @@ vec2f texture_mapping(vec3f pos, float id) {
 }
 
 
-float archSDF(vec3f pos){
-    return differenceSDF(udBox(pos,{0.1f,0.6f,1.2f}),sdSphere(pos , 0.4f));
+float sdCross(vec3f pos){
+    float da = sdBox(pos,vec3f{5.0f,1.0f,1.0f});
+    float db = sdBox(pos,vec3f{1.0f,5.0f,1.0f});
+    float dc = sdBox(pos,vec3f{1.0f,1.0f,5.0f});
+    return min(da,min(db,dc));
 }
 
-float templeSDF(vec3f pos){
-    float c1 = sdCappedCylinder(pos + vec3f{-0.2f,-0.6f,0.8f},vec2f(0.1f,0.6f));
-    float c2 = sdCappedCylinder(pos + vec3f{0.2f,-0.6f,0.8f},vec2f(0.1f,0.6f));
-    float c3 = sdCappedCylinder(pos + vec3f{-0.6f,-0.6f,0.8f},vec2f(0.1f,0.6f));
-    float c4 = sdCappedCylinder(pos + vec3f{0.6f,-0.6f,0.8f},vec2f(0.1f,0.6f));
-    float c5 = sdCappedCylinder(pos + vec3f{-0.2f,-0.6f,-0.8f},vec2f(0.1f,0.6f));
-    float c6 = sdCappedCylinder(pos + vec3f{0.2f,-0.6f,-0.8f},vec2f(0.1f,0.6f));
-    float c7 = sdCappedCylinder(pos + vec3f{-0.6f,-0.6f,-0.8f},vec2f(0.1f,0.6f));
-    float c8 = sdCappedCylinder(pos + vec3f{0.6f,-0.6f,-0.8f},vec2f(0.1f,0.6f));
-    float rect1 = udBox(pos, vec3f{2.0f,0.1f,1.0f});
-    return unionSDF(unionSDF(unionSDF(c5,c6),unionSDF(c7,c8)),
-    unionSDF(unionSDF(unionSDF(c1,c2),unionSDF(c3,c4)),rect1));
+//vec3f mod(vec3f v, vec3f w){
+//    return {fmod(abs(v.x),w.x),fmod(abs(v.y),w.y),fmod(abs(v.z),w.z)};
+//}
+
+float sdStrangerCube(vec3f pos){
+    return differenceSDF(sdBox(pos, {1.0,1.0,1.0}),sdCross(pos*3.0f)/3.0f);
+//    float d = sdBox(pos, {1.0f,1.0f,1.0f});
+//    float s = 1.0f;
+//    for(int m = 0; m < 3; m++){
+//        vec3f a = mod(pos * s, vec3f{2.0f,2.0f,2.0f}) - vec3f{1.0f,1.0f,1.0f};
+//        s *= 3.0f;
+//        vec3f r = vec3f{1.0f,1.0f,1.0f} - (abs(a) * 3.0f);
+//        float c = sdCross(pos * r)/s;
+//        d = max(d,-c);
+//    }
+//    return d;
 }
+
+
+//float archSDF(vec3f pos){
+//    return differenceSDF(udBox(pos,{0.1f,0.6f,1.2f}),sdSphere(pos , 0.4f));
+//}
+
+//float templeSDF(vec3f pos){
+//    float c1 = sdCappedCylinder(pos + vec3f{-0.2f,-0.6f,0.8f},vec2f(0.1f,0.6f));
+//    float c2 = sdCappedCylinder(pos + vec3f{0.2f,-0.6f,0.8f},vec2f(0.1f,0.6f));
+//    float c3 = sdCappedCylinder(pos + vec3f{-0.6f,-0.6f,0.8f},vec2f(0.1f,0.6f));
+//    float c4 = sdCappedCylinder(pos + vec3f{0.6f,-0.6f,0.8f},vec2f(0.1f,0.6f));
+//    float c5 = sdCappedCylinder(pos + vec3f{-0.2f,-0.6f,-0.8f},vec2f(0.1f,0.6f));
+//    float c6 = sdCappedCylinder(pos + vec3f{0.2f,-0.6f,-0.8f},vec2f(0.1f,0.6f));
+//    float c7 = sdCappedCylinder(pos + vec3f{-0.6f,-0.6f,-0.8f},vec2f(0.1f,0.6f));
+//    float c8 = sdCappedCylinder(pos + vec3f{0.6f,-0.6f,-0.8f},vec2f(0.1f,0.6f));
+//    float rect1 = udBox(pos, vec3f{2.0f,0.1f,1.0f});
+//    return unionSDF(unionSDF(unionSDF(c5,c6),unionSDF(c7,c8)),
+//    unionSDF(unionSDF(unionSDF(c1,c2),unionSDF(c3,c4)),rect1));
+//}
 
 
 
 vec2f sceneSDF(vec3f pos) {
-    float d_plane = udBox(pos, {10.0f,0.001f,10.0f});
-    float d_sphere = sdSphere(pos + vec3f{0.6f,-0.5f,1.5f}, 0.5f);
-    float d_cube = udBox(pos + vec3f{-0.6f,-0.5f,1.5f}, { 0.5f, 0.5f, 0.5f});
 
-//    mat4f rot = inverse(rotateY(0.5f));
-//    auto pos_arc =  pos + vec3f{1.5f,-0.6f,4.0f};
-//    auto pos_arc4 = vec4f{pos_arc.x, pos_arc.y,pos_arc.z,1.0f};
-//    auto pos_arc_rot = rot * pos_arc4;
-//    float d_arch = archSDF(vec3f{pos_arc_rot.x,pos_arc_rot.y,pos_arc_rot.z});
-//    float d_temple = templeSDF(pos + vec3f{0.0f,0.0f,3.0f});
+//    auto d_plane = udBox(pos, {10.0f,0.001f,10.0f});
 //
-//    return {d_plane, MAT_PLANE};
-
-    if(d_plane < d_cube)
-        if (d_plane < d_sphere) return {d_plane, MAT_PLANE};
-        else return {d_sphere, MAT_SPHERE};
-    else if (d_cube < d_sphere) return {d_cube, MAT_CUBE};
-    else return {d_sphere, MAT_SPHERE};
-
-//    if(d_plane < d_cube)
-//        if(d_plane < d_sphere1)
-//            if(d_plane < d_cube)  return {d_plane, MAT_PLANE};
-//            else return {d_cube, MAT_CUBE};
-//        else if(d_sphere1 < d_cube)  return {d_sphere1, MAT_SPHERE};
-//        else return {d_cube, MAT_CUBE};
-//    else if(d_sphere2 < d_sphere1)
-//        if(d_sphere2 < d_cube)  return {d_sphere2, MAT_SPHERE};
-//        else return {d_cube, MAT_CUBE};
-//    else if(d_sphere1 < d_cube)  return {d_sphere1, MAT_SPHERE};
+//    auto cpos = vec3f{fmod(pos.x,0.9f),pos.y,pos.z} + vec3f{-0.45f,-0.5f,2.0f};
+//    auto d_cube = udBox(cpos * rotateZ(pif/4.0f) * rotateY(pif/4.0f), {0.25f,0.25f,0.25f});
+//
+//    if (d_plane < d_cube) return {d_plane, MAT_PLANE};
 //    else return {d_cube, MAT_CUBE};
-//    if(d_plane < d_temple) return {d_plane, MAT_PLANE};
-//    else return {d_temple, MAT_TEMPLE};
+
+
+//    code use to test_img1.hdr
+    auto d_plane = udBox(pos, {10.0f,0.001f,10.0f});
+
+    auto rtpos = (pos + vec3f{0.0f,-1.0f,2.0f})  * rotateZ(pif/4.0f) * rotateY(pif/4.0f);
+    auto d_cube = sdStrangerCube(rtpos*2.0f) / 2.0f;
+
+    if (d_plane < d_cube) return {d_plane, MAT_PLANE};
+    else return {d_cube, MAT_CUBE};
+
 }

@@ -19,8 +19,8 @@ vec3f eval_texture(texture *img, vec2f uv){
     float s = uv.x * img->width();
     float t = uv.y * img->height();
 
-    int i = (int)s;
-    int j = (int)t;
+    auto i = (int)fmodf(s,img->width());
+    auto j = (int)fmodf(t,img->height());
 
     float wi = s - i;
     float wj = t - j;
@@ -225,7 +225,9 @@ int main(int argc, char** argv) {
 	auto amb = parse_opt<float>(parser, "--ambient", "-a", "ambient color", 0.1f);
 	auto imageout = parse_opt<std::string>(parser, "--output image", "-o", "output image", "../tests/out.hdr");
 
-    printf("hello world!\n");
+//    printf("hello world!\n");
+
+//    printf("%f\n",fmod(-0.5f,1.0f));
 
     auto amb3f = vec3f{ amb,amb,amb};
 	auto hdr = raymarcher(amb3f, resolution, samples);
