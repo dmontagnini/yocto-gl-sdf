@@ -4,49 +4,59 @@
 
 #include "math_sdf.h"
 
-vec2f abs(vec2f v){
-    return {abs(v.x),abs(v.y)};
+vec2f abs(vec2f v) {
+	return { abs(v.x),abs(v.y) };
 }
 
-vec3f abs(vec3f v){
-    return {abs(v.x),abs(v.y),abs(v.z)};
+vec3f abs(vec3f v) {
+	return { abs(v.x),abs(v.y),abs(v.z) };
 }
 
-vec2f max(vec2f v, vec2f u){
-    return {max(v.x,u.x),max(v.y,u.y)};
+vec2f max(vec2f v, vec2f u) {
+	return { max(v.x,u.x),max(v.y,u.y) };
 }
 
-vec3f max(vec3f v, vec3f u){
-    return {max(v.x,u.x),max(v.y,u.y),max(v.z,u.z)};
+vec3f max(vec3f v, vec3f u) {
+	return { max(v.x,u.x),max(v.y,u.y),max(v.z,u.z) };
 }
 
-float intersectSDF(float d1, float d2){
-    return max(d1,d2);
+float intersectSDF(float d1, float d2) {
+	return max(d1, d2);
 }
 
-float unionSDF(float d1, float d2){
-    return min(d1,d2);
+float unionSDF(float d1, float d2) {
+	return min(d1, d2);
 }
 
-float differenceSDF(float d1, float d2){
-    return max(d1,-d2);
+float differenceSDF(float d1, float d2) {
+	return max(d1, -d2);
 }
 
-float sign( float x )
+float sUnionSDF(float d1, float d2, float k) {
+	float h = clamp(0.5 + 0.5*(d2 - d1) / k, 0.0f, 1.0f);
+	return mix(d2, d1, h) - k*h*(1.0f - h);
+}
+
+float sign(float x)
 {
-    if( x<0.0f ) return -1.0f;
-    if( x>0.0f ) return  1.0f;
-    return 0.0f;
+	if (x < 0.0f) return -1.0f;
+	if (x > 0.0f) return  1.0f;
+	return 0.0f;
+}
+
+float mix(float a, float b, float x)
+{
+	return a + (b - a)*x;
 }
 
 mat3f rotateX(float theta) {
-    float c = cos(theta);
-    float s = sin(theta);
+	float c = cos(theta);
+	float s = sin(theta);
 
-    return mat3f(
-            vec3f(1, 0, 0),
-            vec3f(0, c, -s),
-            vec3f(0, s, c)
+	return mat3f(
+		vec3f(1, 0, 0),
+		vec3f(0, c, -s),
+		vec3f(0, s, c)
 	);
 }
 
@@ -57,7 +67,7 @@ mat3f rotateY(float theta) {
 	return mat3f(
 		vec3f(c, 0, s),
 		vec3f(0, 1, 0),
-		vec3f(-s,0, c)
+		vec3f(-s, 0, c)
 	);
 }
 
@@ -66,7 +76,7 @@ mat3f rotateZ(float theta) {
 	float s = sin(theta);
 
 	return mat3f(
-		vec3f(c,-s, 0),
+		vec3f(c, -s, 0),
 		vec3f(s, c, 0),
 		vec3f(0, 0, 1)
 	);

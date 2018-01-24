@@ -24,7 +24,11 @@ float unionSDF(float d1, float d2);
 
 float differenceSDF(float d1, float d2);
 
+float sUnionSDF(float d1, float d2, float k);
+
 float sign(float x);
+
+float mix(float a, float b, float x);
 
 mat3f rotateX(float theta);
 
