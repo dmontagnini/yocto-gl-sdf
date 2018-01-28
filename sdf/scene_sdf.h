@@ -17,12 +17,12 @@ struct light_sdf {
 
 camera make_camera();
 
-std::vector<material*> make_materials();
+//std::vector<material*> make_materials();
 
 std::vector<light_sdf*> make_lights();
 
-vec2f texture_mapping(vec3f pos, float id);
-
 vec2f sceneSDF(vec3f pos);
+
+material materials(float id, vec3f pos);
 
 #endif //YOCTO_GL_SCENE_SDF_H

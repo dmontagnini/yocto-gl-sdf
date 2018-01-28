@@ -24,11 +24,15 @@ float unionSDF(float d1, float d2);
 
 float differenceSDF(float d1, float d2);
 
-float sUnionSDF(float d1, float d2, float k);
+float smin(float d1, float d2, float k);
+
+float smax(float d1, float d2, float k);
 
 float sign(float x);
 
 float mix(float a, float b, float x);
+vec3f min(vec3f v, vec3f u);
+vec2f min(vec2f v, vec2f u);
 
 mat3f rotateX(float theta);
 

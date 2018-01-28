@@ -9,18 +9,18 @@ float sdSphere(vec3f pos, float r) {
     return length(pos) - r;
 }
 
-// b = (lunghezza, altezza, profondità)
+// b = (lunghezza, altezza, profondita')
 float udBox(vec3f p, vec3f b) {
     return length(max(abs(p)-b,vec3f()));
 }
 
-// b = (lunghezza, altezza, profondità)
+// b = (lunghezza, altezza, profondita')
 // r = raggio angolo arrotondato
 float udRoundBox(vec3f p, vec3f b, float r) {
     return length(max(abs(p)-b,vec3f()))-r;
 }
 
-// b = (lunghezza, altezza, profondità)
+// b = (lunghezza, altezza, profondita')
 // Ma che cambia con udBox ?
 float sdBox(vec3f p, vec3f b) {
     vec3f d = abs(p) - b;
@@ -64,7 +64,7 @@ float sdTriPrism(vec3f p, vec2f h) {
 
 // a = ???
 // b = ???
-// r = raggio estremità arrotondate
+// r = raggio estremita' arrotondate
 float sdCapsule(vec3f p, vec3f a, vec3f b, float r) {
     vec3f pa = p - a, ba = b - a;
     float h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );
@@ -90,7 +90,31 @@ float sdCappedCone(vec3f p, vec3f c) {
 //    return 1.0f;
 }
 
-// r = (lunghezza ellissoide,altezza ellissoide, profondità ellissoide)
-float sdEllipsoid(vec3f p, vec3f r) {
-    return (length( p/r ) - 1.0f) * min(min(r.x,r.y),r.z);
+float sdEllipsoid(vec3f pos, vec3f cen,vec3f rad )
+{
+    vec3f p = pos - cen;
+    float d = length(p/rad) - 1.0f;
+    return d * min(min(rad.x,rad.y),rad.z);
 }
+
+vec2f sdLine(vec3f pos,vec3f a,vec3f b )
+{
+    vec3f pa = pos - a;
+    vec3f ba = b - a;
+
+    float h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );
+
+    return vec2f( length(pa-h*ba), h );
+}
+
+float sdCross(vec3f pos){
+    float da = sdBox(pos,vec3f{MAXFLOAT,1.0f,1.0f});
+    float db = sdBox(pos,vec3f{1.0f,MAXFLOAT,1.0f});
+    float dc = sdBox(pos,vec3f{1.0f,1.0f,MAXFLOAT});
+    return min(da,min(db,dc));
+}
+
+//// r = (lunghezza ellissoide,altezza ellissoide, profondita' ellissoide)
+//float sdEllipsoid(vec3f p, vec3f r) {
+//    return (length( p/r ) - 1.0f) * min(min(r.x,r.y),r.z);
+//}

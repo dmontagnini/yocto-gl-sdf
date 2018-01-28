@@ -36,6 +36,9 @@ float sdCappedCylinder(vec3f p, vec2f h);
 
 float sdCappedCone(vec3f p, vec3f c);
 
-float sdEllipsoid(vec3f p, vec3f r);
+float sdEllipsoid(vec3f pos, vec3f cen,vec3f rad );
+vec2f sdLine(vec3f pos,vec3f a,vec3f b );
+
+//float sdEllipsoid(vec3f p, vec3f r);
 
 #endif //YOCTO_GL_DISTANCE_FUNCTIONS_H

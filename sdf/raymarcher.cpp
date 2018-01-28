@@ -10,35 +10,34 @@
 using namespace ygl;
 
 float EPSILON = 0.001f;
-float RAY_MAX = 50.0f;
+float RAY_MAX = 1000.0f;
 float RAY_MIN = 0.01f;
 int MAX_STEPS = 100;
 
 
-vec3f eval_texture(texture *img, vec2f uv){
-    float s = uv.x * img->width();
-    float t = uv.y * img->height();
+//vec3f eval_texture(texture *img, vec2f uv){
+//    float s = uv.x * img->width();
+//    float t = uv.y * img->height();
+//
+//    auto i = (int)fmodf(s,img->width());
+//    auto j = (int)fmodf(t,img->height());
+//
+//    float wi = s - i;
+//    float wj = t - j;
+//
+//    int i1 = (i + 1) % img->width();
+//    int j1 = (j + 1) % img->height();
 
-    auto i = (int)fmodf(s,img->width());
-    auto j = (int)fmodf(t,img->height());
+//    auto c1 = img->ldr.at(i, j);
+//    auto c2 = img->ldr.at(i1, j);
+//    auto c3 = img->ldr.at(i, j1);
+//    auto c4 = img->ldr.at(i1, j1);
 
-    float wi = s - i;
-    float wj = t - j;
-
-    int i1 = (i + 1) % img->width();
-    int j1 = (j + 1) % img->height();
-//    printf("test before\n");
-//    fflush(stdout);
-    auto c1 = img->ldr.at(i, j);
-    auto c2 = img->ldr.at(i1, j);
-    auto c3 = img->ldr.at(i, j1);
-    auto c4 = img->ldr.at(i1, j1);
-//    printf("test after\n");
-    return vec3f{c1.x/255.0f, c1.y/255.0f , c1.z/255.0f} * (1-wi)*(1-wj) +
-           vec3f{c2.x/255.0f, c2.y/255.0f, c2.z/255.0f} * wi * (1-wj)+
-           vec3f{c3.x/255.0f, c3.y/255.0f, c3.z/255.0f} * (1-wi) * wj +
-           vec3f{c4.x/255.0f, c4.y/255.0f, c4.z/255.0f} * wi * wj;
-}
+//    return vec3f{c1.x/255.0f, c1.y/255.0f , c1.z/255.0f} * (1-wi)*(1-wj) +
+//           vec3f{c2.x/255.0f, c2.y/255.0f, c2.z/255.0f} * wi * (1-wj)+
+//           vec3f{c3.x/255.0f, c3.y/255.0f, c3.z/255.0f} * (1-wi) * wj +
+//           vec3f{c4.x/255.0f, c4.y/255.0f, c4.z/255.0f} * wi * wj;
+//}
 
 vec3f gradient(vec3f pos){
     return normalize(vec3f{sceneSDF({pos.x + EPSILON, pos.y, pos.z}).x - sceneSDF({pos.x - EPSILON, pos.y, pos.z}).x,
@@ -63,7 +62,6 @@ vec2f intersect(ray3f &ray) {
     vec2f v;
 
     for (int step = 0; step < MAX_STEPS; step++) {
-       // if (dist < 0.001f || tot_dist > ray.tmax) break;
 
         v = sceneSDF(pos);
         dist = v.x;
@@ -84,22 +82,17 @@ bool shadow(ray3f &shadow_ray){
 
     float h = 0.0f;
     float t = shadow_ray.tmin;
-    //printf("tmax: %f", shadow_ray.tmax);
     while(t < shadow_ray.tmax) {
         h = sceneSDF(shadow_ray.o + shadow_ray.d * t).x;
-        //printf("t: %f    h: %f\n", t, h);
         if( h < EPSILON ) {
-            //printf("true \n");
             return true;
         }
         t += h;
     }
-    //printf("\n");
-    //fflush(stdout);
     return false;
 }
 
-vec4f shade(vec3f &amb, ray3f &ray, std::vector<material*> &mats, std::vector<light_sdf*> lights) {
+vec4f shade(vec3f &amb, ray3f &ray, std::vector<light_sdf*> lights) {
 
     // calcola luci
     // calcola colore materia
@@ -110,29 +103,14 @@ vec4f shade(vec3f &amb, ray3f &ray, std::vector<material*> &mats, std::vector<li
         auto pos = ray.d * v.x + ray.o;
         auto norm = gradient(pos);
 
-        auto mat = mats[int(v.y)];
+        auto mat = materials(v.y,pos);
 
-        auto kd = mat->kd;
-        auto ks = mat->ks;
-        auto kr = mat->kr;
-        auto rs = mat->rs;
+        auto kd = mat.kd;
+        auto ks = mat.ks;
+        auto kr = mat.kr;
+        auto rs = mat.rs;
 
         auto bp = rs ? 2.0f / std::pow(rs, 4.0f) - 2.0f : 1e6f;
-
-        if(mat->kd_txt.txt != nullptr) {
-            auto tex_coord = texture_mapping(pos, v.y);
-            kd *= eval_texture(mat->kd_txt.txt, tex_coord);
-        }
-
-        if(mat->ks_txt.txt != nullptr) {
-            auto tex_coord = texture_mapping(pos, v.y);
-            ks *= eval_texture(mat->ks_txt.txt, tex_coord);
-        }
-
-        if(mat->kr_txt.txt != nullptr) {
-            auto tex_coord = texture_mapping(pos, v.y);
-            kr *= eval_texture(mat->kr_txt.txt, tex_coord);
-        }
 
         auto color = kd*amb;
 
@@ -143,12 +121,9 @@ vec4f shade(vec3f &amb, ray3f &ray, std::vector<material*> &mats, std::vector<li
 
             if(shadow(shadow_ray)) continue;
 
-            //printf("ll: %f\n", ll);
             auto intensity = l->ke / (ll * ll);
 
             auto h = normalize(ray.d*-1 + light_direction * -1);
-//            printf("intensity: %f %f %f\n", intensity.x, intensity.y, intensity.z);
-//            printf("ke: %f %f %f\n", l->ke.x, l->ke.y, l->ke.z);
 
             color += kd * intensity * max(0.0f, dot(-light_direction, norm));
             color += ks * intensity * powf(max(0.0f, dot(norm, h)), bp);
@@ -158,7 +133,7 @@ vec4f shade(vec3f &amb, ray3f &ray, std::vector<material*> &mats, std::vector<li
         if (kr != vec3f()){
             auto refl_dir = 2 * dot(norm, -ray.d ) * norm + ray.d;
             ray3f refl_ray = {pos + refl_dir*EPSILON, refl_dir, RAY_MIN, RAY_MAX};
-            auto refl = shade(amb, refl_ray, mats, lights);
+            auto refl = shade(amb, refl_ray, lights);
             color+= vec3f{refl.x, refl.y, refl.z} * kr;
         }
 
@@ -169,20 +144,19 @@ vec4f shade(vec3f &amb, ray3f &ray, std::vector<material*> &mats, std::vector<li
 
 }
 
-void compute(int start, int nt, int samples, std::vector<light_sdf *>& lights, std::vector<material *>& mats,
+void compute(int start, int nt, int samples, std::vector<light_sdf *>& lights,
                    vec3f& amb, image4f& img, camera& cam){
 
     for(int j = start; j < img.height(); j += nt){
         for(int i = 0; i < img.width(); i++){
-/*            printf("i %d, j %d\n",i,j);
-            fflush(stdout);*/
+
             for (int k = 0; k < samples; k++){
                 for (int l = 0; l < samples; l++){
                     float u = (i + (l + 0.5f) / samples) / img.width();
                     float v = (img.height() - j + (k + 0.5f) / samples) / img.height();
 
                     auto ray = eval_ray(cam, {u,v});
-                    img.at(i, j) += shade(amb, ray, mats, lights);
+                    img.at(i, j) += shade(amb, ray, lights);
                 }
             }
             img.at(i,j) *= 1.0f / (samples * samples);
@@ -193,7 +167,6 @@ void compute(int start, int nt, int samples, std::vector<light_sdf *>& lights, s
 
 image4f raymarcher(vec3f &amb, int resolution, int samples){
 
-    auto mats = make_materials();
     auto lights = make_lights();
     auto cam = make_camera();
 
@@ -204,7 +177,7 @@ image4f raymarcher(vec3f &amb, int resolution, int samples){
     int nt = 4;
     std::thread t[4];
     for(int k = 0; k < nt; k++) {
-        t[k] = std::thread(compute, k, nt, samples, std::ref(lights), std::ref(mats)
+        t[k] = std::thread(compute, k, nt, samples, std::ref(lights)
                 , std::ref(amb), std::ref(img), std::ref(cam));
     }
 
@@ -220,16 +193,15 @@ int main(int argc, char** argv) {
 
     // command line parsing
 	auto parser = make_parser(argc, argv, "yraymarcher", "offline raymarcher");
-	auto resolution = parse_opt<int>(parser, "--resolution", "-r", "vertical resolution", 720);
+	auto resolution = parse_opt<int>(parser, "--resolution", "-r", "vertical resolution", 1080);
 	auto samples = parse_opt<int>(parser, "--samples", "-s", "per-pixel samples", 1);
 	auto amb = parse_opt<float>(parser, "--ambient", "-a", "ambient color", 0.1f);
 	auto imageout = parse_opt<std::string>(parser, "--output image", "-o", "output image", "../tests/out.hdr");
 
-//    printf("hello world!\n");
+    printf("hello world!\n");
 
-//    printf("%f\n",fmod(-0.5f,1.0f));
+    auto amb3f = vec3f{ 0.5f,0.5f,0.5f};
 
-    auto amb3f = vec3f{ amb,amb,amb};
 	auto hdr = raymarcher(amb3f, resolution, samples);
     save_image4f(imageout, hdr);
 }
