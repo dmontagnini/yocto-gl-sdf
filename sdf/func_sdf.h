@@ -10,35 +10,81 @@ using namespace ygl;
 #ifndef YOCTO_GL_DISTANCE_FUNCTIONS_H
 #define YOCTO_GL_DISTANCE_FUNCTIONS_H
 
-float sdSphere(vec3f pos, float r);
+float fSphere(vec3f p, float r);
 
-float udBox(vec3f p, vec3f b);
+float fPlane(vec3f p, vec3f n, float distanceFromOrigin);
 
-float udRoundBox(vec3f p, vec3f b, float r);
+float fBoxCheap(vec3f p, vec3f b);
 
-float sdBox(vec3f p, vec3f b);
+float fBox(vec3f p, vec3f b);
 
-float sdTorus(vec3f p, vec2f t);
+float fBox2Cheap(vec2f p, vec2f b);
 
-float sdCylinder(vec3f p, vec3f c);
+float fBox2(vec2f p, vec2f b);
 
-float sdCone(vec3f p, vec2f c);
+float fCorner (vec2f p);
 
-float sdPlane(vec3f p, vec4f n);
+float fBlob(vec3f p);
 
-float sdHexPrism(vec3f p, vec2f h);
+float fCylinder(vec3f p, float r, float height);
 
-float sdTriPrism(vec3f p, vec2f h) ;
+float fCapsule(vec3f p, float r, float c);
 
-float sdCapsule(vec3f p, vec3f a, vec3f b, float r);
+float fLineSegment(vec3f p, vec3f a, vec3f b);
 
-float sdCappedCylinder(vec3f p, vec2f h);
+float fCapsule(vec3f p, vec3f a, vec3f b, float r);
 
-float sdCappedCone(vec3f p, vec3f c);
+float fTorus(vec3f p, float smallRadius, float largeRadius);
 
-float sdEllipsoid(vec3f pos, vec3f cen,vec3f rad );
-vec2f sdLine(vec3f pos,vec3f a,vec3f b );
+float fCircle(vec3f p, float r);
 
-//float sdEllipsoid(vec3f p, vec3f r);
+float fDisc(vec3f p, float r);
+
+float fHexagonCircumcircle(vec3f p, vec2f h);
+
+float fHexagonIncircle(vec3f p, vec2f h);
+
+float fCone(vec3f p, float radius, float height);
+
+float fIntersect(float d1, float d2);
+
+float fUnion(float d1, float d2);
+
+float fDifference(float d1, float d2);
+
+float fOpUnionChamfer(float a, float b, float r);
+
+float fOpIntersectionChamfer(float a, float b, float r);
+
+float fOpDifferenceChamfer (float a, float b, float r);
+
+float fOpUnionRound(float a, float b, float r);
+
+float fOpIntersectionRound(float a, float b, float r);
+
+float fOpDifferenceRound (float a, float b, float r);
+
+float fOpUnionColumns(float a, float b, float r, float n);
+
+float fOpDifferenceColumns(float a, float b, float r, float n);
+
+float fOpIntersectionColumns(float a, float b, float r, float n);
+
+float fOpUnionStairs(float a, float b, float r, float n);
+
+float fOpIntersectionStairs(float a, float b, float r, float n);
+
+float fOpDifferenceStairs(float a, float b, float r, float n);
+
+float fOpUnionSoft(float a, float b, float r);
+
+float fOpPipe(float a, float b, float r);
+
+float fOpEngrave(float a, float b, float r);
+
+float fOpGroove(float a, float b, float ra, float rb);
+
+float fOpTongue(float a, float b, float ra, float rb);
+
 
 #endif //YOCTO_GL_DISTANCE_FUNCTIONS_H

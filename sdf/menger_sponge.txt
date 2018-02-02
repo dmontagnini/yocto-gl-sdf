@@ -1,0 +1,124 @@
+//
+// Created by Dario Montagnini on 11/01/18.
+//
+
+#include "scene_sdf.h"
+
+#define MAT_PLANE 0.0
+#define MAT_CUBE 1.0
+
+texture *txt_plane;
+
+
+frame3f make_frame(vec3f ro, vec3f ta){
+    frame3f f = frame3f();
+    f.o = ro;
+    f.z = normalize( ro-ta );
+    f.x = normalize( cross( vec3f(0.0,1.0,0.0), f.z ) );
+    f.y = normalize( cross( f.z, f.x ) );
+    return f;
+}
+
+
+camera make_camera() {
+
+
+    vec3f ro = {0.0f,6.0f,10.0f};
+    vec3f ta = vec3f(0.0f,0.0f,0.0f);
+    auto cam = camera();
+    cam.frame = make_frame(ro,ta);
+    cam.yfov = 0.26f * 2.0f;
+    return cam;
+
+}
+
+vec3f eval_texture(texture *txt, vec2f uv){
+    auto txt_info = texture_info();
+    txt_info.txt = txt;
+    auto color = eval_texture(txt_info,uv);
+    return {color.x,color.y,color.z};
+}
+
+
+void load_textures(){
+    txt_plane = new texture{"grid.png"};
+    txt_plane->ldr = load_image4b("../tests/grid.png");
+}
+
+material materials(float id, vec3f pos){
+
+    auto mat = material();
+
+    if(id == MAT_PLANE){
+        mat.kd = vec3f{0.1f,0.1f,0.1f};
+        mat.kr = vec3f{0.1f,0.1f,0.1f};
+        mat.kd *= eval_texture(txt_plane,{mod(pos.x,1.0f),mod(pos.z,1.0f)});
+    }
+    if(id == MAT_CUBE){
+        mat.kd = vec3f{0.255f,0.412f,0.882f};
+
+    }
+
+    return mat;
+
+}
+
+
+std::vector<light_sdf*> make_lights(){
+    auto lights = std::vector<light_sdf*>();
+
+    //  cam ligh
+    auto lc = new light_sdf();
+//    l1->pos = vec3f(vec3f(-2.0f,6.0f,10.0f));
+    lc->pos = vec3f{0.0f,6.0f,10.0f};
+    lc->ke = vec3f{30.0f, 30.0f, 30.0f};
+    lights.push_back(lc);
+
+//  light1
+    auto l1 = new light_sdf();
+//    l1->pos = vec3f(vec3f(-2.0f,6.0f,10.0f));
+    l1->pos = vec3f(-5.5f,2.5f,3.5f);
+    l1->ke = vec3f{80.0f, 80.0f, 80.0f};
+    lights.push_back(l1);
+
+//  light2
+    auto l2 = new light_sdf();
+//    l2->pos = vec3f(2.0f,6.0f,10.0f);
+    l2->pos = vec3f(5.5f,2.5f,3.5f);
+    l2->ke = vec3f{80.0f, 80.0f, 80.0f};
+    lights.push_back(l2);
+
+    return lights;
+}
+
+float menger_sponge(vec3f p )
+{
+    float d = fBox(p,vec3f(1.0));
+
+    float s = 1.0;
+    for( int m=0; m<3; m++ )
+    {
+        vec3f a = vmod( p*s, vec3f(2.0f) ) - vec3f(1.0);
+        s *= 3.0;
+        vec3f r = vabs(vec3f(1.0f) - 3.0*vabs(a));
+
+        float da = max(r.x,r.y);
+        float db = max(r.y,r.z);
+        float dc = max(r.z,r.x);
+        float c = (min(da,min(db,dc))-1.0f)/s;
+
+        d = max(d,c);
+    }
+
+    return d;
+}
+
+vec2f fScene(vec3f pos) {
+
+    auto d_plane = fBox(pos, {10.0f,0.001f,10.0f});
+    pos = ((pos + vec3f{0.0f,-1.15f,-1.0f}) * rotateZ(pif/4.0f)) * rotateX(pif/4.0f);
+    auto d_sponge = menger_sponge((pos*1.5f))/1.5f;
+    if (d_plane < d_sponge) return {d_plane, MAT_PLANE};
+    else return {d_sponge, MAT_CUBE};
+
+}
