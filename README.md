@@ -86,6 +86,7 @@ it includes some basic distance functions.
 ``` shell
 ./../bin/yraymarcher -s 3 -o "../images/out_menger_sponge.hdr"
 ```
+The code for this scene is in "menger_sponge.txt".
 ![Image](images/out_menger_sponge.png)
 
 ``` shell
