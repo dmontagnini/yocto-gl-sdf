@@ -22,7 +22,7 @@ In our example we do not use textures, so its body is empty.
 it defines camera position and its features.
   ``` shell
   camera make_camera() {
-    vec3f ro = {0.0f,0.0f,5.5f}; // camera position
+    vec3f ro = {0.0f,0.0f,5.0f}; // camera position
     vec3f ta = vec3f(0.0f,0.0f,0.0f); // point where the camera is looking at
     auto cam = camera();
     cam.frame = make_frame(ro,ta); // this is a function that returns the corresponding frame
@@ -31,9 +31,35 @@ it defines camera position and its features.
   }
   ```
   - **make_lights**:
-this function defines lights position and intesity.
+this function defines lights position and intensity.
+  ``` shell
+  std::vector<light_sdf*> make_lights(){
+    auto lights = std::vector<light_sdf*>();
+
+    auto l = new light_sdf();
+    l->pos = vec3f{0.0f,6.0f,10.0f}; // light position
+    l->ke = vec3f{100.0f, 100.0f, 100.0f}; // light intensity
+    lights.push_back(l);
+    
+    return lights;
+  }
+  ```
   - **materials**:
 this function defines material features for each shape in the scene.
+  ``` shell
+  ...
+  #define MAT_SPHERE 0.0f // this is the sphere ID and it is used to associate a material to this shape
+  ...
+  
+  material materials(float id, vec3f pos){
+
+    auto mat = material();
+    if(id == MAT_SPHERE){
+        mat.kd = vec3f{0.8f,0.8f,0.8f}; // sphere color
+    }
+    return mat;
+  }
+  ```
   - **fScene**:
 this function defines the scene.
 Given the coordinates of a point, it returns the shortest distance between that point and some surface and also the id shape that has be
