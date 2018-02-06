@@ -1,5 +1,6 @@
 //
 // Created by Dario Montagnini on 08/01/18.
+// code structure inspired by http://iquilezles.org/www/articles/filteringrm/filteringrm.htm
 //
 
 #include "../yocto/yocto_gl.h"
@@ -53,15 +54,16 @@ vec2f intersect(ray3f &ray) {
 
 }
 
+
+//   http://iquilezles.org/www/articles/rmshadows/rmshadows.htm
 bool shadow(ray3f &shadow_ray){
 
     float h;
     float t = shadow_ray.tmin;
     while(t < shadow_ray.tmax) {
         h = fScene(shadow_ray.o + shadow_ray.d * t).x;
-        if( h < EPSILON ) {
+        if( h < EPSILON )
             return true;
-        }
         t += h;
     }
     return false;
@@ -169,12 +171,14 @@ int main(int argc, char** argv) {
 	auto resolution = parse_opt<int>(parser, "--resolution", "-r", "vertical resolution", 720);
 	auto samples = parse_opt<int>(parser, "--samples", "-s", "per-pixel samples", 1);
 	auto amb = parse_opt<float>(parser, "--ambient", "-a", "ambient color", 0.1f);
-	auto imageout = parse_opt<std::string>(parser, "--output image", "-o", "output image", "../tests/out.hdr");
+	auto imageout = parse_opt<std::string>(parser, "--output", "-o", "output image", "../images/out.png");
 
     printf("hello world!\n");
 
     auto amb3f = vec3f(amb);
 
 	auto hdr = raymarcher(amb3f, resolution, samples);
+
     save_image4f(imageout, hdr);
+//    save_image4b(imageout,tonemap_image(hdr,0.0f,2.2f));
 }

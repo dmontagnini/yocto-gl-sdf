@@ -91,6 +91,7 @@ std::vector<light_sdf*> make_lights(){
     return lights;
 }
 
+//  http://iquilezles.org/www/articles/menger/menger.htm
 float menger_sponge(vec3f p )
 {
     float d = fBox(p,vec3f(1.0));
