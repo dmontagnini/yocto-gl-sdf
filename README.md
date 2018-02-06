@@ -15,9 +15,9 @@ it contains the standard functions that must be completed to define the scene. T
   - **load_texture**:
 if needed, this function must be implemented to load textures.
 In our example we do not use textures, so its body is empty.
-``` shell
-void load_textures(){}
-```
+  ``` shell
+  void load_textures(){}
+  ```
   - **make_camera**:
 it defines camera position and its features.
   - **make_lights**:
