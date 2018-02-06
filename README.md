@@ -83,8 +83,15 @@ it contains some basic functions to manipulate vectors, matrices and other usefu
 it includes some basic distance functions.
 
 ## Images
-
+``` shell
+./../bin/yraymarcher -s 3 -o "../images/out_menger_sponge.hdr"
+```
 ![Image](images/out_menger_sponge.png)
+
+``` shell
+./../bin/yraymarcher -s 3 -o "../images/out_struct.hdr"
+```
+![Image](images/out_struct.png)
 
 ## Getting Started
 
