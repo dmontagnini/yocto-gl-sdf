@@ -48,7 +48,8 @@ this function defines lights position and intensity.
 this function defines material features for each shape in the scene.
   ``` shell
   ...
-  #define MAT_SPHERE 0.0f // this is the sphere ID and it is used to associate a material to this shape
+  #define MAT_SPHERE 0.0f // this is the sphere ID and it is used
+                          // to associate a material to this shape
   ...
   
   material materials(float id, vec3f pos){
@@ -62,7 +63,13 @@ this function defines material features for each shape in the scene.
   ```
   - **fScene**:
 this function defines the scene.
-Given the coordinates of a point, it returns the shortest distance between that point and some surface and also the id shape that has be
+Given the coordinates of a point, it returns the shortest distance between that point and some shape and also that shape ID.
+  ``` shell
+  vec2f fScene(vec3f pos){
+    auto d_sphere= fSphere(pos, 1.0f);
+    return {d_sphere, MAT_SPHERE};
+  }
+  ```
 - **math_sdf.cpp**:
 it contains some basic fuction to manipulate vectors, matrices and other simple math operations.
 - **func_sdf.cpp**:
