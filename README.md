@@ -28,7 +28,7 @@ it defines camera position and its features.
     cam.frame = make_frame(ro,ta); // this is a function that returns the corresponding frame
     cam.yfov = 0.26f * 2.0f; // camera field of view
     return cam; 
-}
+  }
   ```
   - **make_lights**:
 this function defines lights position and intesity.
