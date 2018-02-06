@@ -7,7 +7,7 @@ SDF project based on Yocto/GL Library.
 
 ## Images
 These images are rendered using raymarcher and the scenes are distance functions.
-![Image](Images/out_menger_sponge.png)
+![Image](images/out_menger_sponge.png)
 
 ## Getting Started
 
