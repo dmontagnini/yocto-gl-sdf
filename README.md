@@ -10,15 +10,15 @@ In SDF each shape is rapresented by an implicit function. The scene is a functio
 It contains the application code through which it is possible to render the image defined in scene_sdf.cpp.
 - scene_sdf.cpp
 It contains the standard functions that must be completed to define a scene.
-- - load_texture
+  - load_texture
 this function must be implemented to load textures.
-- - make_camera
+  - make_camera
 this function defines camera position and its features.
-- - make_lights
+  - make_lights
 this function defines lights position and intesity.
-- - materials
+  - materials
 this function defines material features for each shape in the scene.
-- - fScene
+  - fScene
 this function defines the scene.
 Given the coordinates of a point, it returns the shortest distance between that point and some surface.
 - math_sdf.cpp
