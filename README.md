@@ -92,6 +92,7 @@ The code for this scene is in "menger_sponge.txt".
 ``` shell
 ./../bin/yraymarcher -s 3 -o "../images/out_struct.hdr"
 ```
+The code for this scene is in "struct.txt".
 ![Image](images/out_struct.png)
 
 ## Getting Started
