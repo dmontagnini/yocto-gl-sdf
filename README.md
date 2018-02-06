@@ -11,7 +11,7 @@ Using this method, you can create complex scenes in procedural way with few code
 - **raymarcher.cpp**:
 it contains the application code through which it is possible to render the image defined in scene_sdf.cpp.
 - **scene_sdf.cpp**:
-it contains the standard functions that must be completed to define the scene. The code below is an example of how to complete these functions in order to create a scene containing a sphere.
+it contains the standard functions that must be completed to define the scene. The code below is an example of how to complete these functions in order to create a scene containing a sphere of unitary radius.
   - **load_texture**:
 if needed, this function must be implemented to load textures.
 In our example we do not use textures, so its body is empty.
@@ -66,14 +66,21 @@ this function defines the scene.
 Given the coordinates of a point, it returns the shortest distance between that point and some shape and also that shape ID.
   ``` shell
   vec2f fScene(vec3f pos){
-    auto d_sphere= fSphere(pos, 1.0f);
+    auto d_sphere = fSphere(pos, 1.0f); // this function is defined in func_sdf.cpp
     return {d_sphere, MAT_SPHERE};
   }
   ```
+  
+  This is the image obtained with the scene defined above:
+  ``` shell
+  ./../bin/yraymarcher -r 360 -s 3 -o "../images/sphere.hdr"
+  ```
+  ![Image](images/sphere.png)
+  
 - **math_sdf.cpp**:
-it contains some basic fuction to manipulate vectors, matrices and other simple math operations.
+it contains some basic functions to manipulate vectors, matrices and other useful math operations.
 - **func_sdf.cpp**:
-in this file there are some basic distance functions.
+it includes some basic distance functions.
 
 
 ## Images
