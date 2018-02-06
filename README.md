@@ -106,7 +106,7 @@ mkdir build; cd build; cmake ..; cmake --build .
 ### Run
 To run application:
 ``` shell
-./yraymarcher
+./../bin/yraymarcher
 ```
 
 ### Parameters
@@ -117,10 +117,10 @@ To run application:
 
 For example:
 ``` shell
-./yraymarcher -r 1024 -s 3 -a 0.2f -o "../images/yourout.hdr"
+./../bin/yraymarcher -r 1024 -s 3 -a 0.2f -o "../images/yourout.hdr"
 ```
 
 ## Authors
-* **Mattei Francesca Romana** - ...
-* **Montagnini Dario** - ...
-* **Riso Marzia** - ..
+* **Mattei Francesca Romana**
+* **Montagnini Dario**
+* **Riso Marzia**
