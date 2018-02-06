@@ -20,6 +20,16 @@ In our example we do not use textures, so its body is empty.
   ```
   - **make_camera**:
 it defines camera position and its features.
+  ``` shell
+  camera make_camera() {
+    vec3f ro = {0.0f,0.0f,5.5f}; // camera position
+    vec3f ta = vec3f(0.0f,0.0f,0.0f); // point where the camera is looking at
+    auto cam = camera();
+    cam.frame = make_frame(ro,ta); // this is a function that returns the corresponding frame
+    cam.yfov = 0.26f * 2.0f; // camera field of view
+    return cam; 
+}
+  ```
   - **make_lights**:
 this function defines lights position and intesity.
   - **materials**:
