@@ -24,10 +24,10 @@ To run application:
 ```
 
 ### Parameters
-**-r** or **--resolution**: to specify vertical resolution, default 720
-**-s** or **--sample**: to specify per-pixel samples, default 1
-**-a** or **--ambient**: to specify ambient color, default 0.1f
-**-o** or **--output**: to specify output image, default "../images/out.hdr"
+- **-r** or **--resolution**: to specify vertical resolution, default 720
+- **-s** or **--sample**: to specify per-pixel samples, default 1
+- **-a** or **--ambient**: to specify ambient color, default 0.1f
+- **-o** or **--output**: to specify output image, default "../images/out.hdr"
 
 For example:
 ``` shell
@@ -35,6 +35,6 @@ For example:
 ```
 
 ## Authors
-* ** Mattei Francesca Romana ** - ...
-* ** Montagnini Dario ** - ...
-* ** Riso Marzia ** - ..
+* **Mattei Francesca Romana** - ...
+* **Montagnini Dario** - ...
+* **Riso Marzia** - ..
