@@ -40,9 +40,9 @@ vec3f eval_texture(texture *txt, vec2f uv){
 
 void load_textures(){
     txt_plane = new texture{"street.png"};
-    txt_plane->ldr = load_image4b("../tests/street.png");
+    txt_plane->ldr = load_image4b("../images/textures/street.png");
     txt_struct = new texture{"brick.png"};
-    txt_struct->ldr = load_image4b("../tests/brick.png");
+    txt_struct->ldr = load_image4b("../images/textures/brick.png");
 }
 
 material materials(float id, vec3f pos){

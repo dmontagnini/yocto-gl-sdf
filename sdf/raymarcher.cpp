@@ -1,5 +1,5 @@
 //
-// Created by Dario Montagnini on 08/01/18.
+// Created by Mattei Francesca Romana, Montagnini Dario and Riso Marzia on 08/01/18.
 // code structure inspired by http://iquilezles.org/www/articles/filteringrm/filteringrm.htm
 //
 

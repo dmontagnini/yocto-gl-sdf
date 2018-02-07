@@ -1,7 +1,3 @@
-//
-// Created by Dario Montagnini on 11/01/18.
-//
-
 #include "scene_sdf.h"
 
 #define MAT_PLANE 0.0
@@ -42,7 +38,7 @@ vec3f eval_texture(texture *txt, vec2f uv){
 
 void load_textures(){
     txt_plane = new texture{"grid.png"};
-    txt_plane->ldr = load_image4b("../tests/grid.png");
+    txt_plane->ldr = load_image4b("../images/textures/grid.png");
 }
 
 material materials(float id, vec3f pos){
