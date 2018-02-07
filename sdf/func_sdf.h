@@ -1,5 +1,5 @@
 //
-// Created by Dario Montagnini on 11/01/18.
+// Created by Mattei Francesca Romana, Montagnini Dario and Riso Marzia on 11/01/18.
 //
 
 #include "../yocto/yocto_gl.h"
