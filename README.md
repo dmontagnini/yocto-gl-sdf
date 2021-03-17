@@ -121,6 +121,6 @@ For example:
 ```
 
 ## Authors
-* **Mattei Francesca Romana**
-* **Montagnini Dario**
-* **Riso Marzia**
+* [Francesca Romana Mattei](https://github.com/francescaromana)
+* [Dario Montagnini](https://github.com/dariomontagnini)
+* [Marzia Riso](https://github.com/MarziaRiso)
