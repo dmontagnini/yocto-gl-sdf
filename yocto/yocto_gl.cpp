@@ -3104,7 +3104,7 @@ inline void parse(bool& val, const json& js, parse_stack& err) {
 // Parse std::string function.
 inline void parse(string& val, const json& js, parse_stack& err) {
     if (!js.is_string()) throw runtime_error("string expected");
-    val = js;
+    val = (string&)js;
 }
 
 // Parse json function.
