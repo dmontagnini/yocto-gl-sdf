@@ -100,7 +100,7 @@ The code for this scene is in "struct.txt".
 ### Build
 How to build:
 ``` shell
-mkdir build; cd build; cmake ..; cmake --build .
+mkdir build; cd build; cmake -A Win32 ..; cmake --build .
 ```
 
 ### Run
